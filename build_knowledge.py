@@ -91,9 +91,9 @@ def build_knowledge_base():
     print("="*70)
 
     try:
-        embeddings = OllamaEmbeddings(model="gemma4")
+        embeddings = OllamaEmbeddings(model="nomic-embed-text")
         print(f"✓ OllamaEmbeddings initialized successfully")
-        print(f"  Model: gemma4")
+        print(f"  Model: nomic-embed-text")
         print(f"  Ollama will process {len(chunks)} chunks for embedding")
 
     except Exception as e:
@@ -137,7 +137,7 @@ def build_knowledge_base():
     print(f"\nSummary:")
     print(f"  • Documents loaded: {len(filtered_documents)}")
     print(f"  • Chunks created: {len(chunks)}")
-    print(f"  • Embeddings model: gemma4")
+    print(f"  • Embeddings model: nomic-embed-text")
     print(f"  • Vector store location: {chroma_db_dir}")
     print(f"\nThe knowledge base is now ready for querying with RAG applications.")
     print("="*70 + "\n")

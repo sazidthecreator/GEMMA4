@@ -29,9 +29,9 @@ def initialize_rag_agent():
     print("="*80)
 
     # Step 1: Initialize embeddings
-    print("\n[System] Initializing OllamaEmbeddings with gemma4 model...")
+    print("\n[System] Initializing OllamaEmbeddings with nomic-embed-text model...")
     try:
-        embeddings = OllamaEmbeddings(model="gemma4")
+        embeddings = OllamaEmbeddings(model="nomic-embed-text")
         print("✓ OllamaEmbeddings initialized successfully")
     except Exception as e:
         print(f"✗ Error initializing embeddings: {str(e)}")
@@ -60,15 +60,15 @@ def initialize_rag_agent():
         raise
 
     # Step 3: Initialize Language Model
-    print("\n[System] Initializing ChatOllama with gemma4 model...")
+    print("\n[System] Initializing ChatOllama with gemma model...")
     try:
         llm = ChatOllama(
-            model="gemma4",
+            model="gemma",
             temperature=0.3,
             base_url="http://127.0.0.1:11434"
         )
         print("✓ ChatOllama initialized successfully")
-        print("  Model: gemma4")
+        print("  Model: gemma")
         print("  Temperature: 0.3")
     except Exception as e:
         print(f"✗ Error initializing LLM: {str(e)}")
@@ -159,7 +159,7 @@ Retrieved knowledge base documents:
     print("✓ NEXUS CORE AI ASSISTANT READY")
     print("="*80)
     print("\nAgent Status: ONLINE")
-    print("Model: gemma4")
+    print("Model: gemma")
     print("Knowledge Base: Active")
     print("\nType 'exit' or 'quit' to terminate the session.")
     print("="*80 + "\n")
@@ -225,11 +225,11 @@ def run_interactive_session(qa_chain):
             print("\n[Thinking...] Processing your query with RAG pipeline...")
 
             try:
-                response_data = qa_chain({
+                response_data = qa_chain.invoke({
                     "query": user_query
                 })
 
-                print("[Response]")
+                print("[Response]:")
                 formatted_response = format_response(response_data)
                 print(formatted_response)
                 print()
