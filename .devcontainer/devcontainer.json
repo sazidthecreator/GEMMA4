@@ -1,0 +1,36 @@
+{
+    "name": "Nexus AI Environment",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {
+            "installTools": true,
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    },
+    "postCreateCommand": "curl -fsSL https://ollama.com/install.sh | sh && nohup ollama serve > /tmp/ollama.log 2>&1 & sleep 5 && ollama pull gemma4 && pip install langchain-ollama langchain-community chromadb",
+    "postStartCommand": "nohup ollama serve > /tmp/ollama.log 2>&1 &",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python"
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    },
+    "forwardPorts": [
+        11434,
+        3000
+    ],
+    "portsAttributes": {
+        "11434": {
+            "label": "Ollama API",
+            "onAutoForward": "ignore"
+        }
+    }
+}
