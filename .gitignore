@@ -1,0 +1,17 @@
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+chroma_db/
+*.sqlite3
+*.db

@@ -7,9 +7,10 @@ import time
 import requests
 
 # Configuration: এন্টারপ্রাইজ স্ট্যান্ডার্ড এনভায়রনমেন্ট ভেরিয়েবল ব্যবহার করুন
-TELEGRAM_TOKEN = os.getenv("8763555298:AAFFzH0LqoQFLy0SB_lvyvF1cG0JhOBxwsQ")
+TELEGRAM_TOKEN = os.getenv("8763555298:AAHnxh6voGcWueEg_xyATAbO7XZNTRY0gA0")
 CHAT_ID = os.getenv("5819816252")
 API_URL = os.getenv("API_URL", "http://localhost:8000/transcreate")
+API_AUTH_TOKEN = os.getenv("VOCAL_CORE_API_TOKEN")
 POLL_BACKOFF_BASE = float(os.getenv("POLL_BACKOFF_BASE", "2"))
 POLL_BACKOFF_MAX = float(os.getenv("POLL_BACKOFF_MAX", "30"))
 ENGINE_MAX_RETRIES = int(os.getenv("ENGINE_MAX_RETRIES", "3"))
@@ -30,6 +31,13 @@ def send_telegram(session, token, chat_id, text, parse_mode=None):
     return response
 
 
+def api_headers():
+    headers = {}
+    if API_AUTH_TOKEN:
+        headers["Authorization"] = f"Bearer {API_AUTH_TOKEN}"
+    return headers
+
+
 def redact_sensitive(text):
     if not text:
         return text
@@ -37,6 +45,8 @@ def redact_sensitive(text):
     redacted = str(text)
     if TELEGRAM_TOKEN:
         redacted = redacted.replace(TELEGRAM_TOKEN, "[REDACTED_TOKEN]")
+    if API_AUTH_TOKEN:
+        redacted = redacted.replace(API_AUTH_TOKEN, "[REDACTED_TOKEN]")
 
     # Telegram bot token-like pattern: 123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ
     redacted = re.sub(r"\b\d{6,}:[A-Za-z0-9_-]{20,}\b",
@@ -146,7 +156,10 @@ def main():
                         for attempt in range(1, ENGINE_MAX_RETRIES + 1):
                             try:
                                 api_resp = session.post(
-                                    API_URL, json={"text": text}, timeout=120
+                                    API_URL,
+                                    json={"text": text},
+                                    headers=api_headers(),
+                                    timeout=120,
                                 )
                                 api_resp.raise_for_status()
                                 formatted = api_resp.json().get("formatted_text", "No content")
